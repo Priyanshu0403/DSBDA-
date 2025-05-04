@@ -1,0 +1,132 @@
+Title: Data Visualization I
+Using Seaborn to analyze the Titanic dataset with different plots to find patterns and distributions.
+
+🔹 Dataset: titanic
+The Titanic dataset is an inbuilt dataset in Seaborn that contains information about passengers on the Titanic ship.
+
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+
+titanic = sns.load_dataset("titanic")
+✅ sns.load_dataset("titanic") loads the dataset.
+
+🔍 Step 1: Dataset Overview
+
+titanic.head()
+titanic.tail()
+titanic.describe()
+titanic.info()
+📘 Purpose:
+head() / tail() → View first and last rows.
+
+describe() → Shows statistics like mean, std, min, max.
+
+info() → Shows column types and null values.
+
+🔹 Step 2: Fare Distribution - Histogram
+🎯 Goal: Visualize how the fare is distributed.
+
+sns.histplot(data=titanic, x="fare", bins=8)
+sns.histplot(data=titanic, x="fare", binwidth=10)
+sns.histplot(data=titanic, x="fare", bins=20, binwidth=10)
+sns.histplot(data=titanic, x="fare", binwidth=20)
+sns.histplot(data=titanic, x="fare", binwidth=1)
+sns.histplot(data=titanic, x="fare", bins=20, binwidth=50)
+
+📘 Definitions:
+Histogram: A graph showing the distribution of numerical data by grouping into bins.
+
+bins: Number of groups.
+
+binwidth: Width of each group.
+
+✅ Insight: You can observe if fare values are skewed (heavily charged for some passengers) or normally distributed.
+
+🔄 Step 3: Data Cleaning & Encoding
+
+titanic_cleaned = titanic.drop(['pclass','embarked','deck','embark_town'], axis=1)
+titanic_encoded = pd.get_dummies(titanic_cleaned, drop_first=True)
+📘 Definitions:
+drop(): Removes unwanted columns.
+
+get_dummies(): Converts categorical columns into numeric (one-hot encoding).
+
+drop_first=True: Avoids dummy variable trap.
+
+📊 Step 4: Correlation Matrix
+
+titanic_encoded.corr(method='pearson')
+📘 Definition:
+Correlation Matrix: Measures the relationship between variables.
+
++1: Perfect positive correlation
+
+0: No correlation
+
+–1: Perfect negative correlation
+
+✅ Used for feature selection or understanding relationships between variables.
+
+📦 Step 5: Box Plot
+
+sns.boxplot(x='sex', y='age', data=titanic)
+sns.boxplot(x='sex', y='age', data=titanic, hue='survived')
+📘 Definitions:
+Box Plot: Shows min, Q1, median, Q3, and max (summary of distribution).
+
+HUE: Splits data based on a third variable (e.g., survived).
+
+✅ Good for visualizing age distribution by gender, and comparing survivors and non-survivors.
+
+🎻 Step 6: Violin Plot
+
+sns.violinplot(x='sex', y='age', data=titanic)
+sns.violinplot(x='sex', y='age', data=titanic, hue='survived', split=True)
+📘 Definition:
+Violin Plot: Combines boxplot + KDE (kernel density estimate).
+
+Shows distribution shape more clearly than boxplot.
+
+✅ Helps understand where most ages lie, especially between genders and survival.
+
+🍥 Step 7: Strip Plot
+
+sns.stripplot(x='sex', y='age', data=titanic, jitter=True)
+sns.stripplot(x='sex', y='age', data=titanic, jitter=True, hue='survived', dodge=True)
+📘 Definition:
+Strip Plot: A scatterplot for categorical data.
+
+Jitter: Adds small noise to avoid overlapping.
+
+Dodge: Separates the hue values.
+
+✅ Helps visualize every individual data point (e.g., age per person).
+
+🐝 Step 8: Swarm Plot
+
+sns.swarmplot(x='sex', y='age', data=titanic)
+sns.swarmplot(x='sex', y='age', data=titanic, hue='survived', dodge=True)
+📘 Definition:
+Swarm Plot: Improved version of stripplot — avoids overlapping.
+
+Displays all data points clearly.
+
+✅ Useful for seeing actual passengers' ages, and comparing survivors.
+
+✅ Final Conclusion
+
+Seaborn is an advanced data visualization library built on top of Matplotlib. 
+We used it to explore distribution and categorical plots:
+- Histogram (for fare)
+- Boxplot, Violin, Strip, and Swarm plots (for age vs sex/survival)
+🚀 Summary of Key Definitions:
+Term	            Meaning
+Seaborn	        A Python library for creating attractive and informative visualizations
+Histogram	    Distribution of a numeric variable
+Boxplot	        Summary of statistics using 5-number summary (min, Q1, median, Q3, max)
+Violin Plot 	Combination of KDE + boxplot
+Strip Plot	    Scatter plot for categorical data
+Swarm Plot	    Non-overlapping strip plot
+Hue	            Adds a third variable to the plot using color
+Correlation	    Shows relationship between variables

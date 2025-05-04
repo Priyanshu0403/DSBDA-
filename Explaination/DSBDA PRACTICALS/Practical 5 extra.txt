@@ -1,0 +1,197 @@
+🎯 Objective:
+This assignment performs Logistic Regression on a dataset called Social_Network_Ads.csv to predict whether a user purchased a product based on features like gender, age, and estimated salary.
+
+📦 1. Importing Required Libraries
+python
+Copy
+Edit
+import pandas as pd
+import numpy as np
+🔍 Explanation:
+pandas (pd): Used to handle datasets in table form (like Excel).
+
+numpy (np): Used for mathematical operations, arrays, and calculations.
+
+📄 2. Loading the Dataset
+python
+Copy
+Edit
+df = pd.read_csv("Social_Network_Ads.csv")
+df
+🧠 Definition:
+Dataset: A collection of data, usually in tabular form (rows and columns).
+
+read_csv(...): Reads the CSV file into a DataFrame called df.
+
+👁️ 3–4. Viewing the Data
+python
+Copy
+Edit
+df.head()     # First 5 rows
+df.tail()     # Last 5 rows
+📘 Use:
+Helps preview data structure and detect any obvious issues.
+
+ℹ️ 5. Dataset Information
+python
+Copy
+Edit
+df.info()
+💡 Definition:
+Shows column names, number of non-null values, and data types (int, float, object/string).
+
+Helps detect missing values and understand data types.
+
+📊 6. Descriptive Statistics
+python
+Copy
+Edit
+df.describe(include="all")
+📘 Output Includes:
+Count, Mean, Std (standard deviation), Min, Max, and percentiles (25%, 50%, 75%).
+
+🔢 7–8. Dataset Shape and Columns
+python
+Copy
+Edit
+df.shape     # Returns (rows, columns)
+df.columns   # List of column names
+🧼 9–12. Checking for Missing Values
+python
+Copy
+Edit
+df.isnull()           # Shows True/False for each missing cell
+df.isna()             # Same as isnull()
+df.isnull().any()     # Checks if any column has missing values
+df.isnull().sum()     # Counts missing values in each column
+📘 Definition:
+Missing Values: Empty or NaN values in a dataset that can lead to errors in modeling.
+
+⚙️ 13. Replacing Categorical with Numerical
+python
+Copy
+Edit
+df['Gender'].replace(['Male','Female'],[0,1],inplace=True)
+df
+💡 Explanation:
+Machine learning algorithms work with numbers, not text.
+
+Converts 'Male' to 0 and 'Female' to 1.
+
+📈 14. Importing Visualization Libraries
+python
+Copy
+Edit
+import seaborn as sns
+import matplotlib.pyplot as plt
+seaborn: Advanced statistical plotting
+
+matplotlib: Customizable plotting
+
+📊 15. Boxplot
+python
+Copy
+Edit
+df.boxplot()
+📘 Definition:
+Boxplot: Visualizes the distribution and detects outliers in each numerical column using the IQR method.
+
+🎯 16. Splitting Features and Target
+python
+Copy
+Edit
+X = df.drop(['Purchased'], axis=1)
+Y = df['Purchased']
+💡 Definition:
+Features (X): Input variables used to make predictions (e.g., Gender, Age, Salary).
+
+Target (Y): Output variable to be predicted (Purchased → Yes or No).
+
+📚 17. Splitting into Train/Test Sets
+python
+Copy
+Edit
+from sklearn.model_selection import train_test_split
+xtrain, xtest, ytrain, ytest = train_test_split(X, Y, test_size=0.2, random_state=0)
+📘 Definitions:
+Training Set: 80% of data used to build the model.
+
+Testing Set: 20% of data used to evaluate model performance.
+
+random_state: Ensures reproducibility of results.
+
+🤖 18–19. Building and Training the Model
+python
+Copy
+Edit
+from sklearn.linear_model import LogisticRegression
+logreg = LogisticRegression()
+logreg.fit(xtrain, ytrain)
+📘 Definitions:
+Logistic Regression: A classification algorithm used when the output is binary (0 or 1).
+
+fit(...): Trains the model on the training dataset.
+
+📤 20. Displaying Training and Test Data
+python
+Copy
+Edit
+print(xtrain)
+print("-------------\n")
+print(xtest)
+print("-------------\n")
+print(ytrain)
+print("-------------\n")
+print(ytest)
+print("-------------\n")
+print(y_pred)
+But note: This code shows y_pred before it's defined—there’s a missing line:
+
+python
+Copy
+Edit
+y_pred = logreg.predict(xtest)
+📏 21–26. Model Evaluation
+python
+Copy
+Edit
+from sklearn.metrics import precision_score, confusion_matrix, accuracy_score, recall_score, classification_report
+📘 Definitions:
+Accuracy: Percentage of total correct predictions.
+
+Precision: True Positives / (True Positives + False Positives)
+
+Recall: True Positives / (True Positives + False Negatives)
+
+Confusion Matrix: Shows actual vs predicted results in matrix form.
+
+Classification Report: Combines precision, recall, and F1-score.
+
+python
+Copy
+Edit
+cm = confusion_matrix(ytest, y_pred)
+cm
+python
+Copy
+Edit
+print("Accuracy : ", accuracy_score(ytest, y_pred))
+python
+Copy
+Edit
+ps = precision_score(ytest, y_pred)
+ps
+python
+Copy
+Edit
+rs = recall_score(ytest, y_pred)
+rs
+python
+Copy
+Edit
+error_rate = 1 - accuracy_score(ytest, y_pred)
+error_rate
+python
+Copy
+Edit
+print("classification report: ", classification_report(ytest, y_pred))

@@ -1,0 +1,224 @@
+# Importing Required Libraries
+import pandas as pd
+import numpy as np
+import requests
+
+# Loading the Customer dataset
+df = pd.read_csv("Customer.csv")
+
+# Basic Exploration of the dataset
+df.head()                # Display the first 5 rows
+df.tail()                # Display the last 5 rows
+df.info()                # Summary of the dataframe (data types and missing values)
+df.shape                 # Number of rows and columns in the dataframe
+df.describe()            # Summary statistics for numeric columns
+
+# Measures of Central Tendency for the 'Age' column
+df.Age.mean()            # Mean of Age
+df.Age.mode()            # Mode of Age
+df.Age.median()          # Median of Age
+
+# Grouping by 'Age' and 'Genre' columns
+df.groupby(['Age']).count()            # Count of entries grouped by Age
+df.groupby(['Genre']).count()          # Count of entries grouped by Genre
+
+# Standard Deviation for 'Age' column
+df.Age.std()
+
+# Summary statistics for multiple columns
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].mean()   # Mean for selected columns
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].mode()   # Mode for selected columns
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].median() # Median for selected columns
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].max()    # Maximum for selected columns
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].std()    # Standard deviation for selected columns
+
+# Grouping data by 'Genre'
+df2 = df.groupby('Genre')
+
+# Looping through the grouped data and printing each group
+for Genre, Genre_f in df2:
+    print(Genre)
+    print(Genre_f)
+
+# Getting group details for Male and Female
+df2.get_group('Male')         # Male group data
+df2.get_group('Female')       # Female group data
+
+# Grouped statistics for selected columns based on 'Genre'
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].median()
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].mean()
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].max()
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].min()
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].std()
+
+# Loading the Iris dataset
+df2 = pd.read_csv("Iris.csv")
+
+# Renaming columns for convenience
+df2.columns = ("A", "B", "C", "D", "E", "F")
+
+# Grouping the Iris dataset by the 'Species' column
+df3 = df2.groupby("F")
+
+# Accessing individual species groups
+df3.get_group("Iris-setosa")
+df3.get_group("Iris-virginica")
+
+# Summary statistics for each group
+df3.mean()    # Mean for each species
+df3.std()     # Standard deviation for each species
+
+###Explanation:-
+Importing Required Libraries
+python
+Copy
+Edit
+import pandas as pd
+import numpy as np
+import requests
+pandas (pd): This library is used for data manipulation and analysis. It provides tools for handling datasets (usually in the form of DataFrames) and performing operations like grouping, merging, and filtering.
+
+numpy (np): A library for numerical computations in Python, commonly used for handling arrays and mathematical operations.
+
+requests: A library for sending HTTP requests in Python, useful for working with APIs or downloading data from URLs. However, it is not utilized in the current code.
+
+Loading and Exploring the Customer Dataset
+python
+Copy
+Edit
+df = pd.read_csv("Customer.csv")
+This line loads the CSV file Customer.csv into a pandas DataFrame df.
+
+python
+Copy
+Edit
+df.head()                # Display the first 5 rows
+df.tail()                # Display the last 5 rows
+df.info()                # Summary of the dataframe (data types and missing values)
+df.shape                 # Number of rows and columns in the dataframe
+df.describe()            # Summary statistics for numeric columns
+df.head(): Shows the first 5 rows of the dataset, giving an overview of its contents.
+
+df.tail(): Displays the last 5 rows of the dataset.
+
+df.info(): Provides a summary of the DataFrame, including the number of non-null values in each column and the data types of each column.
+
+df.shape: Returns the shape of the DataFrame, indicating the number of rows and columns.
+
+df.describe(): Generates summary statistics (count, mean, std, min, 25%, 50%, 75%, max) for the numerical columns.
+
+Measures of Central Tendency for 'Age' Column
+python
+Copy
+Edit
+df.Age.mean()            # Mean of Age
+df.Age.mode()            # Mode of Age
+df.Age.median()          # Median of Age
+df.Age.mean(): Calculates the mean (average) of the 'Age' column.
+
+df.Age.mode(): Finds the mode (most frequent value) of the 'Age' column.
+
+df.Age.median(): Finds the median (middle value when sorted) of the 'Age' column.
+
+Grouping by 'Age' and 'Genre' Columns
+python
+Copy
+Edit
+df.groupby(['Age']).count()            # Count of entries grouped by Age
+df.groupby(['Genre']).count()          # Count of entries grouped by Genre
+df.groupby(['Age']): Groups the dataset by the 'Age' column and counts the number of occurrences for each unique age.
+
+df.groupby(['Genre']): Groups the dataset by the 'Genre' (e.g., Male/Female) column and counts the number of occurrences for each genre.
+
+Standard Deviation for 'Age' Column
+python
+Copy
+Edit
+df.Age.std()
+df.Age.std(): Calculates the standard deviation of the 'Age' column, which measures the dispersion or spread of the age values.
+
+Summary Statistics for Multiple Columns
+python
+Copy
+Edit
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].mean()   # Mean for selected columns
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].mode()   # Mode for selected columns
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].median() # Median for selected columns
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].max()    # Maximum for selected columns
+df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].std()    # Standard deviation for selected columns
+These lines calculate basic statistics (mean, mode, median, maximum, and standard deviation) for multiple columns (Age, Annual Income, Spending Score). The results provide insights into the distribution and central tendency of the selected columns.
+
+Grouping by 'Genre' and Analyzing Each Group
+python
+Copy
+Edit
+df2 = df.groupby('Genre')
+df2 = df.groupby('Genre'): Groups the dataset by the 'Genre' column (e.g., Male/Female), creating a separate group for each genre.
+
+python
+Copy
+Edit
+for Genre, Genre_f in df2:
+    print(Genre)
+    print(Genre_f)
+This loop iterates through each group (Male/Female) and prints the group name (Genre) along with the data belonging to that group (Genre_f).
+
+python
+Copy
+Edit
+df2.get_group('Male')         # Male group data
+df2.get_group('Female')       # Female group data
+df2.get_group('Male'): Retrieves all rows belonging to the 'Male' group.
+
+df2.get_group('Female'): Retrieves all rows belonging to the 'Female' group.
+
+Grouped Statistics for Selected Columns Based on 'Genre'
+python
+Copy
+Edit
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].median()
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].mean()
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].max()
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].min()
+df2[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].std()
+These lines compute the median, mean, maximum, minimum, and standard deviation of the selected columns, grouped by 'Genre'. This helps to compare how different genders (Male/Female) behave with respect to 'Age', 'Annual Income', and 'Spending Score'.
+
+Loading and Exploring the Iris Dataset
+python
+Copy
+Edit
+df2 = pd.read_csv("Iris.csv")
+Loads the Iris.csv dataset into the DataFrame df2.
+
+python
+Copy
+Edit
+df2.columns = ("A", "B", "C", "D", "E", "F")
+Renames the columns of the Iris dataset for convenience. The new names are ("A", "B", "C", "D", "E", "F").
+
+Grouping by 'Species' and Analyzing Each Group
+python
+Copy
+Edit
+df3 = df2.groupby("F")
+Groups the Iris dataset by the 'Species' column (now labeled as 'F').
+
+python
+Copy
+Edit
+df3.get_group("Iris-setosa")
+df3.get_group("Iris-virginica")
+df3.get_group("Iris-setosa"): Retrieves all rows for the 'Iris-setosa' species.
+
+df3.get_group("Iris-virginica"): Retrieves all rows for the 'Iris-virginica' species.
+
+Summary Statistics for Each Species
+python
+Copy
+Edit
+df3.mean()    # Mean for each species
+df3.std()     # Standard deviation for each species
+df3.mean(): Calculates the mean for each species in the Iris dataset, including attributes like sepal length, sepal width, petal length, and petal width.
+
+df3.std(): Calculates the standard deviation for each species in the Iris dataset.
+

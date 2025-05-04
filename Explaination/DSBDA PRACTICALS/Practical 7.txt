@@ -1,0 +1,190 @@
+Topic: Natural Language Processing (NLP) using NLTK and TF-IDF
+✅ 1. Importing NLTK
+
+import nltk
+NLTK (Natural Language Toolkit): A Python library for processing human language data (text).
+
+📥 2. Downloading NLTK Resources
+
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
+punkt: Pre-trained tokenizer model.
+
+stopwords: Common English words like "the", "is", "in" that are often removed.
+
+wordnet: Lexical database for lemmatization.
+
+averaged_perceptron_tagger: For Part-of-Speech (POS) tagging.
+
+📝 3. Sample Text
+
+text = "Tokenization is the first step in text analytics..."
+This is the input paragraph that will be tokenized (split into smaller parts).
+
+✂️ 4. Import Tokenizers
+
+from nltk.tokenize import word_tokenize, sent_tokenize
+
+sent_tokenize: Splits text into sentences.
+
+word_tokenize: Splits text into words.
+
+✂️ 5–6. Sentence Tokenization and Printing
+
+tokenized_text = sent_tokenize(text)
+print(tokenized_text)
+Splits paragraph into sentences.
+
+✂️ 7. Word Tokenization
+
+tokenized_word = word_tokenize(text)
+print(tokenized_word)
+Splits paragraph into individual words.
+
+❌ 8–9. Removing Stopwords
+
+from nltk.corpus import stopwords
+import re
+stop_words = set(stopwords.words("english"))
+Stopwords: Words like "is", "the", "and" which carry less meaning.
+
+🧹 10. Cleaning and Filtering
+
+text = "How to remove stop words with NLTK library in Python?"
+text = re.sub('[^a-zA-Z]', ' ', text)
+tokens = word_tokenize(text.lower())
+filtered_text = []
+for w in tokens:
+    if w not in stop_words:
+        filtered_text.append(w)
+Key Concepts:
+re.sub('[^a-zA-Z]', ' ', text): Removes punctuation and numbers.
+
+text.lower(): Converts to lowercase.
+
+filtered_text: Contains words with more meaning (after stopwords removed).
+
+🔍 11–12. Display Filtered Results
+
+print("Tokenized Sentence:", tokens)
+print("Filtered Sentence:", filtered_text)
+
+🪓 13. Stemming
+
+from nltk.stem import PorterStemmer
+e_words = ["cried", "saw", "called", "running"]
+ps = PorterStemmer()
+for w in e_words:
+    rootWord = ps.stem(w)
+    print(rootWord)
+Stemming: Reduces words to their root form.
+
+Example: "running" → "run", "cried" → "cri"
+
+🧠 14. Lemmatization
+python
+Copy
+Edit
+from nltk.stem import WordNetLemmatizer
+wordnet_lemmatizer = WordNetLemmatizer()
+text = "studies studying cries cry"
+tokenization = nltk.word_tokenize(text)
+for w in tokenization:
+    print("Lemma for {} is {}".format(w, wordnet_lemmatizer.lemmatize(w)))
+Lemmatization: Similar to stemming but returns valid words using vocabulary and grammar rules.
+
+Example: "studies" → "study"
+
+🔤 15. Part-of-Speech (POS) Tagging
+
+import nltk
+from nltk.tokenize import word_tokenize
+data = "The pink sweater fits her perfectly"
+words = word_tokenize(data)
+for word in words:
+    print(nltk.pos_tag([word]))
+POS Tagging: Identifies grammatical role of each word like noun, verb, adjective.
+
+📊 TF-IDF: Term Frequency – Inverse Document Frequency
+📚 16. Import Required Libraries
+
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+pandas: For data manipulation and tabular output.
+
+TfidfVectorizer: Converts text to TF-IDF feature matrix (though unused here).
+
+📝 17. Two Example Documents
+
+documentA = 'Jupiter is the largest Planet'
+documentB = 'Mars is the fourth planet from the Sun'
+🔠 18. Tokenizing Documents
+
+bagOfWordsA = documentA.split(' ')
+bagOfWordsB = documentB.split(' ')
+Splits sentences into word lists (bag of words model).
+
+🔤 19. Union of Words
+
+uniqueWords = set(bagOfWordsA).union(set(bagOfWordsB))
+Union: All unique words from both documents.
+
+🔢 20. Word Frequency Count
+
+numOfWordsA = dict.fromkeys(uniqueWords, 0)
+for word in bagOfWordsA:
+    numOfWordsA[word] += 1
+numOfWordsB = dict.fromkeys(uniqueWords, 0)
+for word in bagOfWordsB:
+    numOfWordsB[word] += 1
+Counts occurrences of each word in both documents.
+
+📈 21. Compute Term Frequency (TF)
+
+def computeTF(wordDict, bagOfWords):
+    tfDict = {}
+    bagOfWordsCount = len(bagOfWords)
+    for word, count in wordDict.items():
+        tfDict[word] = count / float(bagOfWordsCount)
+    return tfDict
+tfA = computeTF(numOfWordsA, bagOfWordsA)
+tfB = computeTF(numOfWordsB, bagOfWordsB)
+Definitions:
+Term Frequency (TF) = (Number of times word appears in a document) / (Total words in that document)
+
+📉 22. Compute Inverse Document Frequency (IDF)
+
+import math
+def computeIDF(documents):
+    N = len(documents)
+    idfDict = dict.fromkeys(documents[0].keys(), 0)
+    for document in documents:
+        for word, val in document.items():
+            if val > 0:
+                idfDict[word] += 1
+    for word, val in idfDict.items():
+        idfDict[word] = math.log(N / float(val))
+    return idfDict
+idfs = computeIDF([numOfWordsA, numOfWordsB])
+Definitions:
+IDF = log(Total number of documents / Number of documents with the word)
+
+🧮 23. Compute TF-IDF and Display as DataFrame
+
+def computeTFIDF(tfBagOfWords, idfs):
+    tfidf = {}
+    for word, val in tfBagOfWords.items():
+        tfidf[word] = val * idfs[word]
+    return tfidf
+
+tfidfA = computeTFIDF(tfA, idfs)
+tfidfB = computeTFIDF(tfB, idfs)
+
+df = pd.DataFrame([tfidfA, tfidfB])
+df
+Definition:
+TF-IDF = TF × IDF
+
+High TF-IDF score → important word in that document.

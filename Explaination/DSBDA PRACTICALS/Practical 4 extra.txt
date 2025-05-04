@@ -1,0 +1,227 @@
+ This notebook performs data preprocessing, outlier removal, and linear regression modeling on the Boston Housing dataset.
+
+📦 1. Import Libraries
+python
+Copy
+Edit
+import pandas as pd
+import numpy as np
+pandas: Used for handling tabular data.
+
+numpy: Used for numerical operations (like mean, square root, etc.).
+
+📄 2. Load the Dataset
+python
+Copy
+Edit
+df = pd.read_csv("boston_housing.csv")
+Reads a CSV file named boston_housing.csv and stores it in the variable df.
+
+👀 3–5. View the Data
+python
+Copy
+Edit
+df            # Shows the whole DataFrame
+df.head()     # Shows the first 5 rows
+df.tail()     # Shows the last 5 rows
+ℹ️ 6. Data Information
+python
+Copy
+Edit
+df.info()
+Shows column names, number of non-null values, and data types (e.g., float64, int64).
+
+📊 7. Summary Statistics
+python
+Copy
+Edit
+df.describe()
+Gives count, mean, standard deviation, min, max, and percentiles for each column.
+
+❓ 8–9. Checking for Missing Values
+python
+Copy
+Edit
+df.isna()         # Shows True/False for each missing cell
+df.isna().sum()   # Shows the number of missing values per column
+📈 10. Import Plotting Libraries
+python
+Copy
+Edit
+import seaborn as sns
+import matplotlib.pyplot as plt
+seaborn: For statistical plots.
+
+matplotlib.pyplot: For custom plots.
+
+📦 11. Boxplot for Outlier Detection
+python
+Copy
+Edit
+df.boxplot(figsize=(9, 6))
+plt.show()
+Creates a boxplot for each column to visually detect outliers.
+
+🧮 12. IQR Method to Find Outliers in medv
+python
+Copy
+Edit
+Q1 = df['medv'].quantile(0.25)
+Q3 = df['medv'].quantile(0.75)
+IQR = Q3 - Q1
+Lower_limit = Q1 - 1.5 * IQR
+Upper_limit = Q3 + 1.5 * IQR
+print(f'Q1 = {Q1}, Q3 = {Q3}, IQR = {IQR}, Lower_limit = {Lower_limit},Upper_limit = {Upper_limit}')
+Finds outliers using the Interquartile Range (IQR) method:
+
+Anything below Lower_limit or above Upper_limit is an outlier.
+
+⚠️ 13. Collecting Outliers
+python
+Copy
+Edit
+outliers_medv = []
+for i in df.medv:
+    if i < Lower_limit or i > Upper_limit:
+        outliers_medv.append(i)
+print("OUTLIERS ARE", outliers_medv)
+Loops through the medv column (median home value) to find outlier values.
+
+🔍 14. Get Outlier Indexes
+python
+Copy
+Edit
+df[df.medv < Lower_limit].index
+Shows the row indexes where medv is an outlier.
+
+🧼 15. Drop Outliers from Dataset
+python
+Copy
+Edit
+df1 = df.drop(df[(df.medv < Lower_limit) | (df.medv > Upper_limit)].index)
+Removes the rows where medv is an outlier, stores the cleaned data in df1.
+
+📦 16. Boxplot After Removing Outliers
+python
+Copy
+Edit
+df1.boxplot(figsize=(9, 6))
+plt.show()
+New boxplot shows the data after outliers have been removed.
+
+✅ 17. Check for Remaining Outliers
+python
+Copy
+Edit
+outliers_medv = []
+for i in df1.medv:
+    if i < Lower_limit or i > Upper_limit:
+        outliers_medv.append(i)
+print("OUTLIERS ARE", outliers_medv)
+Verifies if any outliers are still left.
+
+👁️ 18. View Cleaned Dataset
+python
+Copy
+Edit
+df1
+Displays the cleaned dataset (df1).
+
+🎯 19–20. Define Features and Target
+python
+Copy
+Edit
+X = df.drop(['medv'], axis=1)
+Y = df['medv']
+X = all columns except medv (input features)
+
+Y = target variable (medv)
+
+🧾 21. Split Data into Train/Test
+python
+Copy
+Edit
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
+Splits data into training (80%) and testing (20%) sets.
+
+🧠 22–23. Create and Train Linear Regression Model
+python
+Copy
+Edit
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression()
+model = lm.fit(X_train, Y_train)
+Imports and fits a Linear Regression model on training data.
+
+🧪 24. Predictions
+python
+Copy
+Edit
+Y_train_pred = lm.predict(X_train)
+Y_test_pred = lm.predict(X_test)
+Predicts target values for both training and test sets.
+
+📊 25–26. Compare Predictions and Actual Values
+python
+Copy
+Edit
+Y_train_pred       # Predicted values
+Y_train            # Actual values
+📉 27. Import Evaluation Metrics
+python
+Copy
+Edit
+from sklearn.metrics import mean_squared_error, r2_score
+For evaluating model performance.
+
+🧮 28. Evaluate Model
+python
+Copy
+Edit
+mse = mean_squared_error(Y_train, Y_train_pred)
+print("The model performance for training set")
+print("--------------------------------------")
+print('MSE is {}'.format(mse))
+print("\n")
+
+mse = mean_squared_error(Y_test, Y_test_pred)
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MSE is {}'.format(mse))
+print("\n\n\n")
+
+rmse = (np.sqrt(mean_squared_error(Y_train, Y_train_pred)))
+r2 = r2_score(Y_train, Y_train_pred)
+print("The model performance for training set")
+print("--------------------------------------")
+print('RMSE is {}'.format(rmse))
+print('R2 score is {}'.format(r2))
+print("\n")
+
+rmse = (np.sqrt(mean_squared_error(Y_test, Y_test_pred)))
+r2 = r2_score(Y_test, Y_test_pred)
+print("The model performance for testing set")
+print("--------------------------------------")
+print('RMSE is {}'.format(rmse))
+print('R2 score is {}'.format(r2))
+MSE (Mean Squared Error): How much the predicted values deviate from the actual.
+
+RMSE: Square root of MSE; more interpretable.
+
+R² Score: How well the model fits the data (closer to 1 is better).
+
+📈 29. Plot True vs Predicted Values
+python
+Copy
+Edit
+plt.scatter(Y_train, Y_train_pred, c='blue', marker='o', label='Training data')
+plt.scatter(Y_test, Y_test_pred, c='lightgreen', marker='s', label='Test data')
+plt.xlabel('True values')
+plt.ylabel('Predicted')
+plt.title("True value vs Predicted value")
+plt.legend(loc='upper left')
+plt.grid(True)
+plt.plot()
+plt.show()
+Shows how close the predicted values are to the actual values for both train and test data.

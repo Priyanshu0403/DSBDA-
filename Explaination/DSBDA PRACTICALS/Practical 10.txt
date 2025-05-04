@@ -1,0 +1,117 @@
+📌 Title: Data Visualization III
+🎯 Objective:
+Use the Iris dataset to analyze and visualize:
+
+Features and their types
+
+Feature distributions using histograms
+
+Outliers using boxplots
+
+Correlation between features using a heatmap
+
+🔍 Dataset Overview
+
+df = pd.read_csv("Iris.csv")
+df.head()
+df.tail()
+df.describe()
+df.info()
+df.isnull().sum()
+df.shape
+df["Species"].unique()
+df.groupby("Species").size()
+📘 Definitions:
+head() / tail() – Shows the first/last 5 rows.
+
+describe() – Summary statistics of numeric columns.
+
+info() – Data types and non-null values.
+
+isnull().sum() – Check for missing values.
+
+shape – Dimensions of the dataset.
+
+unique() – Unique values in a column.
+
+groupby().size() – Count records by species.
+
+✅ 1. List of Features and Their Types
+From df.info(), we get:
+
+Feature	Data Type	Type
+Id	int64	Numeric (Not needed for analysis)
+SepalLengthCm	float64	Numeric
+SepalWidthCm	float64	Numeric
+PetalLengthCm	float64	Numeric
+PetalWidthCm	float64	Numeric
+Species	object	Nominal (Categorical)
+
+✅ Features Used: SepalLengthCm, SepalWidthCm, PetalLengthCm, PetalWidthCm
+✅ Target Column: Species (Iris-setosa, Iris-versicolor, Iris-virginica)
+
+✅ 2. Histogram and Correlation Heatmap
+
+corr = df.select_dtypes(include='number').corr()
+plt.subplots(figsize=(10, 6))
+sns.heatmap(corr, annot=True, cmap='coolwarm')
+🔥 Correlation Heatmap:
+Shows correlation between features (from –1 to +1).
+
+High correlation → One feature can predict the other.
+
+Example: PetalLengthCm and PetalWidthCm are usually highly correlated in Iris.
+
+✅ 3. Boxplots for Each Feature by Species
+
+def graph(y):
+    sns.boxplot(x="Species", y=y, data=df)
+
+plt.figure(figsize=(10,10))
+
+plt.subplot(221); graph('SepalLengthCm')
+plt.subplot(222); graph('SepalWidthCm')
+plt.subplot(223); graph('PetalLengthCm')
+plt.subplot(224); graph('PetalWidthCm')
+plt.show()
+📘 Boxplot:
+Shows median, Q1, Q3, and outliers.
+
+Great for comparing feature ranges between species.
+
+✅ You can easily spot:
+
+How petal length differs between species.
+
+Which species has the widest or narrowest sepals.
+
+Where outliers appear (dots outside whiskers).
+
+✅ 4. Compare Distributions & Identify Outliers
+
+sns.boxplot(x='SepalWidthCm', data=df)
+sns.boxplot(x='SepalLengthCm', data=df)
+sns.boxplot(x='PetalWidthCm', data=df)
+sns.boxplot(x='PetalLengthCm', data=df)
+📌 Findings:
+SepalWidthCm: May contain some outliers on the high/low ends.
+
+PetalWidthCm & PetalLengthCm: Good separation between species. May find outliers for Virginica.
+
+SepalLengthCm: Slight variation among species, fewer outliers.
+
+📈 Summary of Visual Tools Used:
+Visualization	       Purpose
+Histogram	      Shows distribution of numeric data
+Heatmap	          Shows correlation among numeric features
+Boxplot	          Compares distributions, identifies outliers
+Subplots	      Display multiple visualizations in one figure
+
+📝 Conclusion:
+Iris dataset is a classic classification dataset with 3 species and 4 numeric features.
+
+Petal features are better discriminators of species than sepal features.
+
+Outliers exist mostly in SepalWidthCm.
+
+Data visualization helps in feature selection, distribution analysis, and outlier detection.

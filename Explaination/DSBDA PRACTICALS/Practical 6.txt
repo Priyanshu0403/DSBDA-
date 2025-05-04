@@ -1,0 +1,161 @@
+Objective
+Implement the Naïve Bayes classification algorithm using Python on the iris.csv dataset.
+
+Evaluate the classifier's performance using a confusion matrix and compute:
+
+TP (True Positive)
+FP (False Positive)
+TN (True Negative)
+FN (False Negative)
+Accuracy
+Error Rate
+Precision
+Recall
+🌼 Dataset: iris.csv
+The Iris dataset contains measurements of 150 iris flowers from 3 different species:
+setosa
+versicolor
+virginica
+
+Columns:
+sepal length
+sepal width
+petal length
+petal width
+class (the species)
+
+🔧 Step-by-Step Code Breakdown
+📥 Step 1: Import Libraries and Load Data
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.read_csv("iris-data.csv")
+✅ Explanation:
+
+pandas is used for data manipulation.
+
+matplotlib.pyplot is used to plot the confusion matrix.
+
+read_csv() loads the dataset into a DataFrame.
+
+🧾 Step 2: Explore the Data
+
+data.head()
+data.shape
+data.tail()
+data.info()
+data.describe()
+data.isnull().sum()
+✅ Purpose of Each:
+
+head() / tail(): show first/last rows of the data.
+
+shape: returns (rows, columns).
+
+info(): summary including null values and types.
+
+describe(): statistical summary.
+
+isnull().sum(): checks for missing values.
+
+🎯 Step 3: Prepare Features (X) and Labels (Y)
+
+X = data.drop(['class'], axis=1)
+Y = data.drop(['sepal length', 'sepal width', 'petal length', 'petal width'], axis=1)
+✅ Explanationcolumns:
+
+X: All  except the label (class) — features.
+
+Y: Only the class column — the target label we want to predict.
+
+🧪 Step 4: Tran-Test Split
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, shuffle=True)
+✅ Definitions:
+
+train_test_split: splits data into training and testing.
+
+test_size=0.2: 20% data for testing, 80% for training.
+
+shuffle=True: randomly shuffle data before splitting.
+
+📊 Step 5: Train Naïve Bayes Model
+
+from sklearn.naive_bayes import GaussianNB
+model = GaussianNB()
+model.fit(X_train, Y_train)
+✅ Definition:
+
+Naïve Bayes: A probabilistic classifier based on Bayes’ Theorem, assuming features are independent.
+
+GaussianNB: Assumes data follows a normal (Gaussian) distribution.
+
+🔍 Step 6: Predict & Evaluate Accuracy
+
+Y_pred = model.predict(X_test)
+model.score(X_test, Y_test)
+✅ predict(): predicts class labels for test data.
+✅ score(): gives the accuracy (percentage of correct predictions).
+
+📉 Step 7: Confusion Matrix
+
+from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
+
+print(accuracy_score(Y_test, Y_pred))
+cm = confusion_matrix(Y_test, Y_pred)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+disp.plot()
+✅ Confusion Matrix: A table to evaluate classification results:
+
+Predicted Positive	Predicted Negative
+Actual Positive	TP	FN
+Actual Negative	FP	TN
+
+Since Iris has 3 classes, confusion matrix will be 3x3.
+
+🧮 Step 8: Extract Confusion Matrix Values (For Binary Classification)
+
+def get_confusion_matrix_values(Y_true, Y_pred):
+    cm = confusion_matrix(Y_true, Y_pred)
+    return(cm[0][0], cm[0][1], cm[1][0], cm[1][1])
+⚠️ This method assumes binary classification, but Iris has 3 classes. It may cause incorrect values if not adjusted.
+
+📏 Step 9: Calculate Metrics
+
+print("The Accuracy is ", (TP+TN)/(TP+TN+FP+FN))
+print("The Precision is ", TP/(TP+FP))
+print("The recall is ", TP/(TP+FN))
+✅ Definitions:
+
+True Positive (TP): Correctly predicted positives.
+
+False Positive (FP): Incorrectly predicted as positive.
+
+False Negative (FN): Incorrectly predicted as negative.
+
+True Negative (TN): Correctly predicted negatives.
+
+📊 Metrics Formulae
+Accuracy= (TP+TN)/(TP+TN+FP+FN)
+
+Error Rate = 1−Accuracy
+
+Precision= TP/(TP+FP)
+
+Recall= TP/(TP+FN)
+​
+ 
+⚠️ Note for Multi-class:
+This confusion matrix and TP, FP, TN, FN calculation is only valid if you reduce the problem to 2 classes. Otherwise, for 3-class problems (like iris), you'd need to:
+
+Use classification_report() from sklearn
+
+Compute per-class metrics
+
+✅ Recommendation
+Add this to handle multi-class evaluation better:
+
+from sklearn.metrics import classification_report
+print(classification_report(Y_test, Y_pred))

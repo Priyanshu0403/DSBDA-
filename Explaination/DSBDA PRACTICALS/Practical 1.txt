@@ -1,0 +1,271 @@
+### 1. Import all the required Python Libraries.
+import pandas as pd
+
+### 2. Load the Dataset into pandas dataframe.
+iris = pd.read_csv("Iris.csv")
+
+### 3. Data Preprocessing:
+iris.head()
+iris.tail()
+iris.describe(include="all")
+iris.shape
+iris.columns
+iris[0:3]
+iris.loc[0:2]
+iris.loc[0:2, 'Id':'PetalWidthCm']
+iris.iloc[1:3]
+iris.iloc[1:5, 1:5]
+
+### Check for missing values in the data using pandas isnull()
+iris.isnull()
+iris.isna()
+iris.isnull().any()
+iris.isnull().sum()
+iris.SepalLengthCm.isnull().sum()
+
+### 5. Data Formatting and Data Normalization:
+iris.dtypes
+iris.SepalLengthCm = iris.SepalLengthCm.astype("int")
+iris.dtypes
+
+### Data Normalization
+import sklearn
+from sklearn import preprocessing
+
+iris.head()
+min_max_scaler = preprocessing.MinMaxScaler()  # Min-Max scaler
+x = iris.iloc[:, :4]  # Separate input features from dataset
+x
+x_scaled = min_max_scaler.fit_transform(x)  # Transform using min-max processor
+df_normalized = pd.DataFrame(x_scaled)  # Normalized DataFrame
+df_normalized
+
+### 6. Turn categorical variables into quantitative variables in Python.
+# There are many ways to convert categorical data into numerical data.
+# Here the most commonly used method is discussed.
+
+### i. Label Encoding:
+from sklearn import preprocessing
+iris['Species'].unique()
+label_encoder = preprocessing.LabelEncoder()
+iris['Species'] = label_encoder.fit_transform(iris['Species'])
+iris['Species'].unique()
+
+### Conclusion
+# In this way we have explored the functions of the Python library for:
+# - Data Preprocessing
+# - Data Wrangling Techniques
+# - Handling Missing Values
+# on the Iris Dataset.
+
+###Explanation:-### 1. Import all the required Python Libraries.
+python
+Copy
+Edit
+import pandas as pd
+pandas is the primary Python library used for data manipulation and analysis.
+
+pd is just an alias to make it shorter to use.
+
+### 2. Load the Dataset into pandas dataframe.
+python
+Copy
+Edit
+iris = pd.read_csv("Iris.csv")
+read_csv() loads the dataset named Iris.csv from your working directory.
+
+It stores the data in a DataFrame named iris, which is like a table.
+
+### 3. Data Preprocessing:
+python
+Copy
+Edit
+iris.head()
+Shows the first 5 rows of the dataset (default).
+
+Helps you preview the structure of the data.
+
+python
+Copy
+Edit
+iris.tail()
+Shows the last 5 rows of the dataset.
+
+python
+Copy
+Edit
+iris.describe(include="all")
+Gives a statistical summary for all columns, including categorical ones.
+
+Includes count, mean, std, min, max, etc.
+
+python
+Copy
+Edit
+iris.shape
+Returns the dimensions of the DataFrame as (rows, columns).
+
+python
+Copy
+Edit
+iris.columns
+Lists all column names in the dataset.
+
+python
+Copy
+Edit
+iris[0:3]
+Displays rows 0, 1, 2 using index slicing.
+
+python
+Copy
+Edit
+iris.loc[0:2]
+Also shows rows 0, 1, 2 but using label-based indexing (safer for named indexes).
+
+python
+Copy
+Edit
+iris.loc[0:2, 'Id':'PetalWidthCm']
+Shows a subset of rows and columns from Id to PetalWidthCm for rows 0, 1, 2.
+
+python
+Copy
+Edit
+iris.iloc[1:3]
+Displays rows 1 and 2 using position-based indexing.
+
+python
+Copy
+Edit
+iris.iloc[1:5, 1:5]
+Returns rows 1 to 4 and columns 1 to 4 by numeric positions.
+
+### Check for missing values in the data using pandas isnull()
+python
+Copy
+Edit
+iris.isnull()
+Returns a DataFrame with True/False for each cell: True if the cell is missing (NaN).
+
+python
+Copy
+Edit
+iris.isna()
+Same as isnull() — an alias that does the same thing.
+
+python
+Copy
+Edit
+iris.isnull().any()
+Checks if any missing value exists in each column (True or False).
+
+python
+Copy
+Edit
+iris.isnull().sum()
+Returns the count of missing values in each column.
+
+python
+Copy
+Edit
+iris.SepalLengthCm.isnull().sum()
+Specifically checks how many missing values are in the SepalLengthCm column.
+
+### 5. Data Formatting and Data Normalization:
+python
+Copy
+Edit
+iris.dtypes
+Displays the data type (int, float, object, etc.) of each column.
+
+python
+Copy
+Edit
+iris.SepalLengthCm = iris.SepalLengthCm.astype("int")
+Converts the SepalLengthCm column from float (if it was) to integer type.
+
+python
+Copy
+Edit
+iris.dtypes
+Confirms the data type change after conversion.
+
+### Data Normalization
+python
+Copy
+Edit
+import sklearn
+from sklearn import preprocessing
+Imports the sklearn library, specifically the preprocessing module used for scaling data.
+
+python
+Copy
+Edit
+iris.head()
+Just previews the dataset again.
+
+python
+Copy
+Edit
+min_max_scaler = preprocessing.MinMaxScaler()
+Creates a Min-Max Scaler object that will scale data between 0 and 1.
+
+python
+Copy
+Edit
+x = iris.iloc[:, :4]
+Extracts the first four columns (all input features, excluding the label Species).
+
+Stored in variable x.
+
+python
+Copy
+Edit
+x
+Displays the extracted features (optional output).
+
+python
+Copy
+Edit
+x_scaled = min_max_scaler.fit_transform(x)
+Applies the Min-Max scaling on the data.
+
+Each value is transformed to a range of [0, 1].
+
+python
+Copy
+Edit
+df_normalized = pd.DataFrame(x_scaled)
+Converts the scaled result into a new DataFrame called df_normalized.
+
+python
+Copy
+Edit
+df_normalized
+Displays the normalized dataset.
+
+### 6. Turn categorical variables into quantitative variables in Python.
+python
+Copy
+Edit
+iris['Species'].unique()
+Lists the unique values in the Species column before encoding (e.g., 'Setosa', 'Versicolor', 'Virginica').
+
+python
+Copy
+Edit
+label_encoder = preprocessing.LabelEncoder()
+Creates a LabelEncoder object that converts categories to numbers.
+
+python
+Copy
+Edit
+iris['Species'] = label_encoder.fit_transform(iris['Species'])
+Replaces the Species column with its encoded numerical values (e.g., 'Setosa' → 0, etc.).
+
+python
+Copy
+Edit
+iris['Species'].unique()
+Shows the encoded values after label encoding (like [0, 1, 2]).
