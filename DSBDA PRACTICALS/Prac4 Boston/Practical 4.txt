@@ -1,0 +1,301 @@
+# Importing necessary libraries
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Loading the Boston Housing dataset
+df = pd.read_csv("boston_housing.csv")
+
+# Display the first and last 5 rows of the dataset
+df.head()
+df.tail()
+
+# Display information about the dataset (e.g., data types, non-null counts)
+df.info()
+
+# Generate summary statistics for numerical columns
+df.describe()
+
+# Check for missing values in the dataset
+df.isna()
+
+# Calculate the sum of missing values for each column
+df.isna().sum()
+
+# Plotting boxplot to check for outliers
+df.boxplot(figsize=(9, 6))
+plt.show()
+
+# Calculate the Interquartile Range (IQR) for the target variable 'medv'
+Q1 = df['medv'].quantile(0.25)
+Q3 = df['medv'].quantile(0.75)
+IQR = Q3 - Q1
+
+# Define lower and upper limits for detecting outliers
+Lower_limit = Q1 - 1.5 * IQR
+Upper_limit = Q3 + 1.5 * IQR
+
+# Print the calculated IQR, Lower limit, and Upper limit
+print(f'Q1 = {Q1}, Q3 = {Q3}, IQR = {IQR}, Lower_limit = {Lower_limit}, Upper_limit = {Upper_limit}')
+
+# Identify outliers in 'medv' (target variable)
+outliers_medv = []
+for i in df.medv:
+    if i < Lower_limit or i > Upper_limit:
+        outliers_medv.append(i)
+print("OUTLIERS ARE", outliers_medv)
+
+# Remove rows with outliers in 'medv'
+df1 = df.drop(df[(df.medv < Lower_limit) | (df.medv > Upper_limit)].index)
+
+# Display boxplot of the cleaned dataset
+df1.boxplot(figsize=(9, 6))
+plt.show()
+
+# Identify any remaining outliers in the cleaned dataset
+outliers_medv = []
+for i in df1.medv:
+    if i < Lower_limit or i > Upper_limit:
+        outliers_medv.append(i)
+print("OUTLIERS ARE", outliers_medv)
+
+# Define the feature matrix X (excluding target variable 'medv') and target vector Y (target variable 'medv')
+X = df.drop(['medv'], axis=1)
+Y = df['medv']
+
+# Split the dataset into training and testing sets (80% for training, 20% for testing)
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
+
+# Create and train a linear regression model
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression()
+model = lm.fit(X_train, Y_train)
+
+# Make predictions on both training and testing sets
+Y_train_pred = lm.predict(X_train)
+Y_test_pred = lm.predict(X_test)
+
+# Import metrics to evaluate the model
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Evaluate the model on the training set using Mean Squared Error (MSE)
+mse_train = mean_squared_error(Y_train, Y_train_pred)
+print("The model performance for training set")
+print("--------------------------------------")
+print('MSE is {}'.format(mse_train))
+print("\n")
+
+# Evaluate the model on the testing set using Mean Squared Error (MSE)
+mse_test = mean_squared_error(Y_test, Y_test_pred)
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MSE is {}'.format(mse_test))
+print("\n\n\n")
+
+# Calculate and print Root Mean Squared Error (RMSE) and R-squared (R2) for the training set
+rmse_train = np.sqrt(mean_squared_error(Y_train, Y_train_pred))
+r2_train = r2_score(Y_train, Y_train_pred)
+print("The model performance for training set")
+print("--------------------------------------")
+print('RMSE is {}'.format(rmse_train))
+print('R2 score is {}'.format(r2_train))
+print("\n")
+
+# Calculate and print RMSE and R-squared (R2) for the testing set
+rmse_test = np.sqrt(mean_squared_error(Y_test, Y_test_pred))
+r2_test = r2_score(Y_test, Y_test_pred)
+print("The model performance for testing set")
+print("--------------------------------------")
+print('RMSE is {}'.format(rmse_test))
+print('R2 score is {}'.format(r2_test))
+
+# Plot the true vs predicted values for both training and testing sets
+plt.scatter(Y_train, Y_train_pred, c='blue', marker='o', label='Training data')
+plt.scatter(Y_test, Y_test_pred, c='lightgreen', marker='s', label='Test data')
+plt.xlabel('True values')
+plt.ylabel('Predicted values')
+plt.title("True value vs Predicted value")
+plt.legend(loc='upper left')
+plt.grid(True)
+plt.show()
+
+###Explanation
+1. Importing Necessary Libraries:
+python
+Copy
+Edit
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+pandas (pd): Used for data manipulation and analysis. We use it to load the dataset, clean it, and perform various operations on it.
+
+numpy (np): Used for numerical operations like calculating the square root.
+
+seaborn (sns): Used for visualizations such as plotting boxplots.
+
+matplotlib.pyplot (plt): Used for plotting graphs and visualizing results.
+
+2. Loading and Exploring the Dataset:
+python
+Copy
+Edit
+df = pd.read_csv("boston_housing.csv")
+df.head()
+df.tail()
+df.info()
+df.describe()
+pd.read_csv("boston_housing.csv"): Loads the Boston Housing dataset from a CSV file.
+
+df.head(): Displays the first 5 rows of the dataset to give a preview.
+
+df.tail(): Displays the last 5 rows of the dataset.
+
+df.info(): Provides summary information about the dataset, such as the number of non-null values and data types.
+
+df.describe(): Shows summary statistics (e.g., mean, standard deviation, min, max, quartiles) for numerical columns in the dataset.
+
+3. Checking for Missing Values:
+python
+Copy
+Edit
+df.isna()
+df.isna().sum()
+df.isna(): Checks for missing values in the dataset, returning a boolean DataFrame where True indicates missing values.
+
+df.isna().sum(): Calculates the total number of missing values for each column.
+
+4. Visualizing the Data:
+python
+Copy
+Edit
+df.boxplot(figsize=(9, 6))
+plt.show()
+df.boxplot(): A boxplot is used to identify potential outliers in the dataset. It displays the distribution of the data and highlights the presence of any extreme values (outliers).
+
+5. Identifying and Removing Outliers:
+python
+Copy
+Edit
+Q1 = df['medv'].quantile(0.25)
+Q3 = df['medv'].quantile(0.75)
+IQR = Q3 - Q1
+Lower_limit = Q1 - 1.5 * IQR
+Upper_limit = Q3 + 1.5 * IQR
+Q1 and Q3: These are the first (25th percentile) and third (75th percentile) quartiles of the medv column (which represents the median value of house prices).
+
+IQR: The Interquartile Range, which is the difference between Q3 and Q1, measures the spread of the middle 50% of the data.
+
+Lower_limit and Upper_limit: The limits outside of which values are considered outliers. Values outside this range (1.5 times the IQR above Q3 or below Q1) are outliers.
+
+python
+Copy
+Edit
+outliers_medv = []
+for i in df.medv:
+    if i < Lower_limit or i > Upper_limit:
+        outliers_medv.append(i)
+This code identifies the actual outliers in the medv column using the calculated limits.
+
+python
+Copy
+Edit
+df1 = df.drop(df[(df.medv < Lower_limit) | (df.medv > Upper_limit)].index)
+Rows with medv values outside the Lower_limit and Upper_limit are dropped from the dataset to remove outliers.
+
+6. Preparing Data for the Model:
+python
+Copy
+Edit
+X = df.drop(['medv'], axis=1)
+Y = df['medv']
+X: The features (independent variables) are all columns in the dataset except for medv (target variable).
+
+Y: The target variable medv (house prices) that we want to predict.
+
+7. Splitting the Data into Training and Testing Sets:
+python
+Copy
+Edit
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
+train_test_split(): Splits the dataset into training and testing sets. Here, 80% of the data is used for training, and 20% is used for testing.
+
+8. Training the Linear Regression Model:
+python
+Copy
+Edit
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression()
+model = lm.fit(X_train, Y_train)
+LinearRegression(): Initializes the linear regression model.
+
+model = lm.fit(X_train, Y_train): Trains the model on the training data (X_train and Y_train).
+
+9. Making Predictions:
+python
+Copy
+Edit
+Y_train_pred = lm.predict(X_train)
+Y_test_pred = lm.predict(X_test)
+lm.predict(): Predicts house prices using the trained model on both the training and testing datasets.
+
+10. Evaluating the Model:
+Performance on the Training Set:
+python
+Copy
+Edit
+from sklearn.metrics import mean_squared_error, r2_score
+
+mse_train = mean_squared_error(Y_train, Y_train_pred)
+print("The model performance for training set")
+print("--------------------------------------")
+print('MSE is {}'.format(mse_train))
+mean_squared_error(): Calculates the Mean Squared Error (MSE) between the actual values and the predicted values for the training set.
+
+MSE is used to measure how well the model performs. A lower MSE indicates better performance.
+
+Performance on the Testing Set:
+python
+Copy
+Edit
+mse_test = mean_squared_error(Y_test, Y_test_pred)
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MSE is {}'.format(mse_test))
+Same as above but for the testing set.
+
+Root Mean Squared Error (RMSE) and R-squared (R2):
+python
+Copy
+Edit
+rmse_train = np.sqrt(mean_squared_error(Y_train, Y_train_pred))
+r2_train = r2_score(Y_train, Y_train_pred)
+RMSE: The square root of MSE, which gives an idea of the model's error in the original units (house prices).
+
+R2: A statistical measure that indicates how well the model explains the variance in the target variable. An R2 of 1 means perfect prediction, while 0 means no predictive power.
+
+python
+Copy
+Edit
+rmse_test = np.sqrt(mean_squared_error(Y_test, Y_test_pred))
+r2_test = r2_score(Y_test, Y_test_pred)
+Similar calculations for the testing set.
+
+11. Visualizing the Results:
+python
+Copy
+Edit
+plt.scatter(Y_train, Y_train_pred, c='blue', marker='o', label='Training data')
+plt.scatter(Y_test, Y_test_pred, c='lightgreen', marker='s', label='Test data')
+plt.xlabel('True values')
+plt.ylabel('Predicted values')
+plt.title("True value vs Predicted value")
+plt.legend(loc='upper left')
+plt.grid(True)
+plt.show()
+A scatter plot is created to compare the actual (true) values of house prices with the predicted values. Blue points represent the training data, and green points represent the testing data.
+
+The closer the points are to the diagonal line (which would represent perfect predictions), the better the model is.

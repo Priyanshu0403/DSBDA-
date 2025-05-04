@@ -1,0 +1,203 @@
+# Import necessary libraries
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+# Reading the CSV file
+df = pd.read_csv("Iris.csv")
+
+# Displaying first few rows to understand the dataset
+df.head()
+
+# Checking the last few rows
+df.tail()
+
+# Summary statistics of the dataset
+df.describe()
+
+# Information about the dataset and its types
+df.info()
+
+# Checking for missing values
+df.isnull().sum()
+
+# Checking the shape of the dataset
+df.shape
+
+# Checking unique values in 'Species' column
+df["Species"].unique()
+
+# Grouping by 'Species' to see the count of each species
+df.groupby("Species").size()
+
+# List down the features and their types
+df.info()
+
+# Create a histogram for each feature in the dataset
+sns.histplot(df['SepalLengthCm'], kde=True)
+plt.title("Histogram of Sepal Length")
+plt.show()
+
+sns.histplot(df['SepalWidthCm'], kde=True)
+plt.title("Histogram of Sepal Width")
+plt.show()
+
+sns.histplot(df['PetalLengthCm'], kde=True)
+plt.title("Histogram of Petal Length")
+plt.show()
+
+sns.histplot(df['PetalWidthCm'], kde=True)
+plt.title("Histogram of Petal Width")
+plt.show()
+
+# Creating a correlation heatmap
+corr = df.select_dtypes(include='number').corr()
+plt.subplots(figsize=(10, 6))
+sns.heatmap(corr, annot=True, cmap='coolwarm')
+plt.title("Correlation Heatmap")
+plt.show()
+
+# Create boxplot for each feature by 'Species'
+def graph(y):
+    sns.boxplot(x="Species", y=y, data=df)
+    plt.title(f"Boxplot of {y} by Species")
+    plt.show()
+
+plt.figure(figsize=(10, 10))
+
+# Adding the subplot for each feature
+plt.subplot(221)
+graph('SepalLengthCm')
+
+plt.subplot(222)
+graph('SepalWidthCm')
+
+plt.subplot(223)
+graph('PetalLengthCm')
+
+plt.subplot(224)
+graph('PetalWidthCm')
+
+# Show the plot
+plt.show()
+
+# Compare distributions and identify outliers with individual boxplots
+sns.boxplot(x='SepalWidthCm', data=df)
+plt.title("Boxplot of Sepal Width")
+plt.show()
+
+sns.boxplot(x='SepalLengthCm', data=df)
+plt.title("Boxplot of Sepal Length")
+plt.show()
+
+sns.boxplot(x='PetalWidthCm', data=df)
+plt.title("Boxplot of Petal Width")
+plt.show()
+
+sns.boxplot(x='PetalLengthCm', data=df)
+plt.title("Boxplot of Petal Length")
+plt.show()
+
+Explanation:-
+1. List Down the Features and Their Types:
+python
+Copy
+Edit
+df.info()
+Features:
+
+SepalLengthCm: Numeric (Continuous)
+
+SepalWidthCm: Numeric (Continuous)
+
+PetalLengthCm: Numeric (Continuous)
+
+PetalWidthCm: Numeric (Continuous)
+
+Species: Nominal (Categorical)
+
+You also checked for missing values:
+
+python
+Copy
+Edit
+df.isnull().sum()
+This confirms whether there are any missing values in the dataset. You can proceed with handling any missing data (if necessary) before further analysis.
+
+2. Create a Histogram for Each Feature:
+python
+Copy
+Edit
+sns.histplot(df['SepalLengthCm'], kde=True)
+sns.histplot(df['SepalWidthCm'], kde=True)
+sns.histplot(df['PetalLengthCm'], kde=True)
+sns.histplot(df['PetalWidthCm'], kde=True)
+plt.show()
+Histograms are used to visualize the distribution of each feature in the dataset:
+
+Sepal Length and Petal Length are more normally distributed, with a peak in the center.
+
+Sepal Width and Petal Width show a skewed distribution.
+
+You can also create individual histograms for each feature using sns.histplot with kde=True to show the kernel density estimation (KDE), which helps visualize the continuous data distribution.
+
+3. Create a Boxplot for Each Feature:
+python
+Copy
+Edit
+def graph(y):
+    sns.boxplot(x="Species", y=y, data=df)
+    
+plt.figure(figsize=(10,10))
+
+# Adding the subplot at the specified grid position
+plt.subplot(221)
+graph('SepalLengthCm')
+
+plt.subplot(222)
+graph('SepalWidthCm')
+
+plt.subplot(223)
+graph('PetalLengthCm')
+
+plt.subplot(224)
+graph('PetalWidthCm')
+
+plt.show()
+This creates boxplots for each feature grouped by the Species column. Boxplots help to visualize the distribution of data, including the median, quartiles, and outliers. Here’s the observation:
+
+Sepal Length and Petal Length show distinct separation between species, making it easier to distinguish between species.
+
+Sepal Width and Petal Width show some overlap between species, though there are visible differences.
+
+Outliers (points outside the whiskers of the boxplot) can be seen for features like Sepal Width and Petal Width.
+
+4. Compare Distributions and Identify Outliers:
+python
+Copy
+Edit
+sns.boxplot(x='SepalWidthCm', data=df)
+plt.show()
+
+sns.boxplot(x='SepalLengthCm', data=df)
+plt.show()
+
+sns.boxplot(x='PetalWidthCm', data=df)
+plt.show()
+
+sns.boxplot(x='PetalLengthCm', data=df)
+plt.show()
+By plotting individual boxplots for each feature, you can identify outliers. The boxplot gives a summary of the minimum, first quartile, median, third quartile, and maximum values. Outliers appear as individual points outside the whiskers of the boxplot:
+
+Sepal Width has some outliers, particularly for the Versicolor species.
+
+Petal Width also has a few outliers for the Virginica species.
+
+Petal Length shows no major outliers, but there is a clear distinction between species.
+
+Additional Observations:
+Iris Species: There are three species: Setosa, Versicolor, and Virginica.
+
+Feature Relationships: Based on the histograms and boxplots, Petal Length and Petal Width appear to be strong differentiators between species. Setosa tends to have smaller petal measurements compared to Versicolor and Virginica.
+
+Outliers: Outliers may represent extreme values in the dataset, but in this case, they are minimal, and the overall trends of the dataset are still clear.

@@ -1,0 +1,243 @@
+# Import libraries
+import pandas as pd
+import numpy as np
+
+# Load the dataset
+df = pd.read_csv("Social_Network_Ads.csv")
+df.head()
+df.tail()
+df.info()
+df.describe(include="all")
+df.shape
+df.columns
+df.isnull()
+df.isna()
+df.isnull().any()
+df.isnull().sum()
+
+# Convert categorical data into numerical data
+df['Gender'].replace(['Male', 'Female'], [0, 1], inplace=True)
+
+# Plotting boxplot to check for outliers
+import seaborn as sns
+import matplotlib.pyplot as plt
+df.boxplot()
+
+# Model Building
+X = df.drop(['Purchased'], axis=1)
+Y = df['Purchased']
+
+# Splitting the data into training and testing sets
+from sklearn.model_selection import train_test_split
+xtrain, xtest, ytrain, ytest = train_test_split(X, Y, test_size=0.2, random_state=0)
+
+# Building the logistic regression model
+from sklearn.linear_model import LogisticRegression
+logreg = LogisticRegression()
+logreg.fit(xtrain, ytrain)
+
+# Predict the output
+y_pred = logreg.predict(xtest)
+
+# Displaying data splits and predictions
+print(xtrain)
+print("-------------\n")
+print(xtest)
+print("-------------\n")
+print(ytrain)
+print("-------------\n")
+print(ytest)
+print("-------------\n")
+print(y_pred)
+
+# Evaluation metrics
+from sklearn.metrics import precision_score, confusion_matrix, accuracy_score, recall_score, classification_report
+
+# Confusion matrix
+cm = confusion_matrix(ytest, y_pred)
+cm
+
+# Accuracy score
+print("Accuracy: ", accuracy_score(ytest, y_pred))
+
+# Precision score
+ps = precision_score(ytest, y_pred)
+ps
+
+# Recall score
+rs = recall_score(ytest, y_pred)
+rs
+
+# Error rate
+error_rate = 1 - accuracy_score(ytest, y_pred)
+error_rate
+
+# Classification report
+print("Classification report: ", classification_report(ytest, y_pred))
+
+
+###Explaination
+Importing Libraries:
+python
+Copy
+Edit
+import pandas as pd
+import numpy as np
+pandas (pd): A Python library used for data manipulation and analysis. It's ideal for working with structured data.
+
+numpy (np): A library used for numerical operations. It's especially useful for working with arrays, matrices, and large data sets.
+
+Loading and Exploring the Dataset:
+python
+Copy
+Edit
+df = pd.read_csv("Social_Network_Ads.csv")
+df = pd.read_csv("Social_Network_Ads.csv"): Loads the dataset from the provided CSV file into a pandas DataFrame (df). This DataFrame contains the data for analysis.
+
+python
+Copy
+Edit
+df.head()
+df.tail()
+df.head(): Displays the first 5 rows of the dataset, providing a quick view of the data.
+
+df.tail(): Displays the last 5 rows of the dataset.
+
+python
+Copy
+Edit
+df.info()
+df.info(): Provides a concise summary of the DataFrame, including the number of non-null entries, the column names, and the data types.
+
+python
+Copy
+Edit
+df.describe(include="all")
+df.describe(include="all"): Provides summary statistics for each column in the dataset. This includes count, mean, standard deviation, min, max, and the 25th, 50th, and 75th percentiles.
+
+python
+Copy
+Edit
+df.shape
+df.shape: Displays the dimensions of the DataFrame (rows, columns).
+
+python
+Copy
+Edit
+df.columns
+df.columns: Displays the names of the columns in the dataset.
+
+python
+Copy
+Edit
+df.isnull()
+df.isna()
+df.isnull().any()
+df.isnull().sum()
+df.isnull() and df.isna(): Checks for missing (null) values in the DataFrame.
+
+df.isnull().any(): Checks if there are any null values in each column.
+
+df.isnull().sum(): Summarizes how many null values are present in each column.
+
+Converting Categorical Data to Numerical:
+python
+Copy
+Edit
+df['Gender'].replace(['Male', 'Female'], [0, 1], inplace=True)
+df['Gender'].replace(['Male', 'Female'], [0, 1], inplace=True): This line converts the "Gender" column (which is categorical) to numerical values. "Male" becomes 0, and "Female" becomes 1.
+
+Visualizing Data with Boxplot:
+python
+Copy
+Edit
+import seaborn as sns
+import matplotlib.pyplot as plt
+df.boxplot()
+import seaborn as sns: Imports Seaborn, a statistical data visualization library built on top of Matplotlib.
+
+import matplotlib.pyplot as plt: Imports Matplotlib for creating plots and visualizations.
+
+df.boxplot(): Creates a boxplot of the dataset to visualize the distribution of data and check for outliers.
+
+Preparing the Data for Model Building:
+python
+Copy
+Edit
+X = df.drop(['Purchased'], axis=1)
+Y = df['Purchased']
+X = df.drop(['Purchased'], axis=1): This separates the features (independent variables) by dropping the "Purchased" column. The remaining columns will be used as the input features.
+
+Y = df['Purchased']: This assigns the "Purchased" column as the target variable (dependent variable) to be predicted.
+
+python
+Copy
+Edit
+from sklearn.model_selection import train_test_split
+xtrain, xtest, ytrain, ytest = train_test_split(X, Y, test_size=0.2, random_state=0)
+train_test_split(X, Y, test_size=0.2, random_state=0): This splits the dataset into training and testing sets. 80% of the data will be used for training, and 20% for testing. random_state=0 ensures that the split is reproducible.
+
+Training the Logistic Regression Model:
+python
+Copy
+Edit
+from sklearn.linear_model import LogisticRegression
+logreg = LogisticRegression()
+logreg.fit(xtrain, ytrain)
+logreg = LogisticRegression(): Creates a Logistic Regression model instance.
+
+logreg.fit(xtrain, ytrain): Trains the logistic regression model using the training data (xtrain for features and ytrain for labels).
+
+Making Predictions:
+python
+Copy
+Edit
+y_pred = logreg.predict(xtest)
+y_pred = logreg.predict(xtest): This makes predictions using the trained logistic regression model on the test set (xtest).
+
+Evaluating the Model:
+python
+Copy
+Edit
+from sklearn.metrics import precision_score, confusion_matrix, accuracy_score, recall_score, classification_report
+from sklearn.metrics: Imports evaluation metrics to assess the model's performance.
+
+python
+Copy
+Edit
+cm = confusion_matrix(ytest, y_pred)
+cm
+cm = confusion_matrix(ytest, y_pred): Computes the confusion matrix, which shows the true positives (TP), true negatives (TN), false positives (FP), and false negatives (FN).
+
+python
+Copy
+Edit
+print("Accuracy: ", accuracy_score(ytest, y_pred))
+accuracy_score(ytest, y_pred): Calculates the accuracy of the model by comparing the predicted values (y_pred) to the actual values (ytest).
+
+python
+Copy
+Edit
+ps = precision_score(ytest, y_pred)
+ps
+precision_score(ytest, y_pred): Calculates the precision of the model, which is the proportion of positive predictions that are correct (TP / (TP + FP)).
+
+python
+Copy
+Edit
+rs = recall_score(ytest, y_pred)
+rs
+recall_score(ytest, y_pred): Calculates the recall of the model, which is the proportion of actual positives that are correctly identified (TP / (TP + FN)).
+
+python
+Copy
+Edit
+error_rate = 1 - accuracy_score(ytest, y_pred)
+error_rate
+error_rate = 1 - accuracy_score(ytest, y_pred): Calculates the error rate, which is the complement of accuracy (1 - accuracy).
+
+python
+Copy
+Edit
+print("classification report: ", classification_report(ytest, y_pred))
+classification_report(ytest, y_pred): Generates a detailed classification report, including precision, recall, f1-score, and support for each class (0 and 1).

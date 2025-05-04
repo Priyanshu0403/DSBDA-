@@ -1,0 +1,190 @@
+# Import necessary libraries
+import nltk
+
+# Download necessary NLTK datasets
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
+
+# Define two example sentences
+sentence1 = "Technology has revolutionized the way we live, work, and communicate. From smartphones to artificial intelligence, innovations continue to shape our daily lives."
+sentence2 = "While some argue that digital advancements lead to social isolation, others believe they foster global connectivity and creativity. As we move forward, it's crucial to balance innovation with ethical considerations."
+
+# Tokenize the sentences into words and sentences
+from nltk import word_tokenize, sent_tokenize
+
+print("Tokenized words:", word_tokenize(sentence1))
+print("\nTokenized sentences:", sent_tokenize(sentence1))
+
+# Part of speech tagging
+from nltk import pos_tag
+token = word_tokenize(sentence1) + word_tokenize(sentence2)
+tagged = pos_tag(token)
+print("Tagging parts of speech:", tagged)
+
+# Stop word removal
+from nltk.corpus import stopwords
+
+stop_words = stopwords.words('english')
+token = word_tokenize(sentence1)
+cleaned_token = []
+
+for word in token:
+    if word not in stop_words:
+        cleaned_token.append(word)
+
+print("Unclean version:", token)
+print("\nCleaned version:", cleaned_token)
+
+# Stemming
+from nltk.stem import PorterStemmer
+
+stemmer = PorterStemmer()
+token = word_tokenize(sentence2)
+stemmed = [stemmer.stem(word) for word in token]
+print(" ".join(stemmed))
+
+# Lemmatization
+from nltk.stem import WordNetLemmatizer
+
+nltk.download('omw-1.4')
+lemmatizer = WordNetLemmatizer()
+token = word_tokenize(sentence2)
+lemmatized_output = [lemmatizer.lemmatize(word) for word in token]
+print(" ".join(lemmatized_output))
+
+# Import pandas and TfidfVectorizer from sklearn
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Example documents
+documentA = 'The old oak tree stood tall in the middle of the forest, its branches reaching out like ancient fingers'
+documentB = 'The children laughed joyfully as they played in the park, their voices echoing through the trees'
+
+# Creating bag of words for both documents
+bagOfWordsA = documentA.split(' ')
+bagOfWordsB = documentB.split(' ')
+
+# Unique words from both documents
+uniqueWords = set(bagOfWordsA).union(bagOfWordsB)
+
+# Create dictionaries to count word frequencies in both documents
+numOfWordsA = dict.fromkeys(uniqueWords, 0)
+for word in bagOfWordsA:
+    numOfWordsA[word] += 1
+
+numOfWordsB = dict.fromkeys(uniqueWords, 0)
+for word in bagOfWordsB:
+    numOfWordsB[word] += 1
+
+# Computing term frequency (TF)
+def computeTF(wordDict, bagOfWords):
+    tfDict = {}
+    bagOfWordsCount = len(bagOfWords)
+    for word, count in wordDict.items():
+        tfDict[word] = count / float(bagOfWordsCount)
+    return tfDict
+
+tfA = computeTF(numOfWordsA, bagOfWordsA)
+tfB = computeTF(numOfWordsB, bagOfWordsB)
+
+# Computing inverse document frequency (IDF)
+def computeIDF(documents):
+    import math
+    N = len(documents)
+    idfDict = dict.fromkeys(documents[0].keys(), 0)
+    for document in documents:
+        for word, val in document.items():
+            if val > 0:
+                idfDict[word] += 1
+    for word, val in idfDict.items():
+        idfDict[word] = math.log(N / float(val))
+    return idfDict
+
+idfs = computeIDF([numOfWordsA, numOfWordsB])
+
+# Computing term frequency-inverse document frequency (TF/IDF)
+def computeTFIDF(tfBagOfWords, idfs):
+    tfidf = {}
+    for word, val in tfBagOfWords.items():
+        tfidf[word] = val * idfs[word]
+    return tfidf
+
+tfidfA = computeTFIDF(tfA, idfs)
+tfidfB = computeTFIDF(tfB, idfs)
+
+# Display the results as a DataFrame
+df = pd.DataFrame([tfidfA, tfidfB])
+df
+
+
+###Explanation:-
+Line-by-Line Explanation:
+Importing Libraries:
+
+nltk: Natural Language Toolkit for text processing.
+
+pandas: Used for data manipulation and analysis.
+
+sklearn.feature_extraction.text.TfidfVectorizer: For converting text data into TF-IDF features.
+
+Downloading NLTK Resources:
+
+These resources are required for tasks like tokenization, stop word removal, POS tagging, and lemmatization. The downloads include various corpora such as 'punkt', 'stopwords', 'wordnet', etc.
+
+Tokenization:
+
+word_tokenize: Splits sentences into individual words.
+
+sent_tokenize: Splits the sentence into multiple sentences.
+
+The sentences are tokenized and printed both as words and sentences.
+
+Part-of-Speech Tagging:
+
+pos_tag: Tags each word with its part of speech (e.g., noun, verb, etc.).
+
+The tokenized words from both sentences are tagged and printed.
+
+Stopword Removal:
+
+stopwords.words('english'): Retrieves a list of common stop words (e.g., "the", "is", "in").
+
+Each word in sentence1 is checked against the stop words list, and words that are not stop words are added to the cleaned_token list.
+
+Stemming:
+
+PorterStemmer(): A stemming algorithm that reduces words to their root form (e.g., "running" becomes "run").
+
+Each word in sentence2 is stemmed, and the result is printed.
+
+Lemmatization:
+
+WordNetLemmatizer(): A lemmatizer that reduces words to their base or dictionary form (e.g., "better" becomes "good").
+
+Each word in sentence2 is lemmatized, and the result is printed.
+
+Bag of Words:
+
+The documents (documentA and documentB) are split into words, and a union of unique words is created.
+
+Word counts for each document are stored in numOfWordsA and numOfWordsB.
+
+Term Frequency (TF):
+
+The computeTF function calculates the frequency of each word in the document divided by the total number of words, yielding the Term Frequency for each word.
+
+Inverse Document Frequency (IDF):
+
+The computeIDF function calculates how much information the word carries by considering how often it appears across multiple documents.
+
+TF-IDF Calculation:
+
+The computeTFIDF function calculates the TF-IDF score for each word by multiplying its TF value with its IDF value.
+
+DataFrame:
+
+The tfidfA and tfidfB dictionaries (representing TF-IDF values for documentA and documentB) are converted into a DataFrame and displayed.

@@ -1,0 +1,204 @@
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the dataset
+data = pd.read_csv("iris-data.csv")
+
+# Display the first 5 rows of the dataset
+data.head()
+
+# Get the shape of the dataset (rows, columns)
+data.shape
+
+# Display the first 5 rows again
+data.head()
+
+# Display the last 5 rows of the dataset
+data.tail()
+
+# Get information about the dataset (e.g., data types, non-null counts)
+data.info()
+
+# Get basic statistics (mean, std, min, max, etc.) for numerical columns
+data.describe()
+
+# Check for missing values in the dataset
+data.isnull().sum()
+
+# Define the feature variables (X) by dropping the 'class' column
+X = data.drop(['class'], axis=1)
+
+# Define the target variable (Y) by dropping the feature columns
+Y = data.drop(['sepal length', 'sepal width', 'petal length', 'petal width'], axis=1)
+
+# Print the feature variables and target variable
+print(X)
+print(Y)
+
+# Print the shapes of the feature and target variables
+print(X.shape)
+print(Y.shape)
+
+# Split the data into training and testing sets (80% train, 20% test)
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, shuffle=True)
+
+# Print the shapes of the training and testing sets
+print(X_train.shape)
+print(X_test.shape)
+print(Y_train.shape)
+print(Y_test.shape)
+
+# Import the Naive Bayes classifier
+from sklearn.naive_bayes import GaussianNB
+
+# Initialize the Naive Bayes model
+model = GaussianNB()
+
+# Fit the model to the training data
+model.fit(X_train, Y_train)
+
+# Predict the target variable using the test data
+Y_pred = model.predict(X_test)
+
+# Get the model accuracy on the test set
+model.score(X_test, Y_test)
+
+# Import metrics for evaluating the model
+from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
+
+# Print the accuracy score of the model
+print(accuracy_score(Y_test, Y_pred))
+
+# Generate the confusion matrix
+cm = confusion_matrix(Y_test, Y_pred)
+
+# Create a display for the confusion matrix
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+
+# Print the confusion matrix
+print("Confusion Matrix")
+print(cm)
+
+# Plot the confusion matrix
+disp.plot()
+plt.show()
+
+# Function to extract confusion matrix values (TP, FP, FN, TN)
+def get_confusion_matrix_values(Y_true, Y_pred):
+    cm = confusion_matrix(Y_true, Y_pred)
+    return(cm[0][0], cm[0][1], cm[1][0], cm[1][1])
+
+# Get the confusion matrix values
+TP, FP, FN, TN = get_confusion_matrix_values(Y_test, Y_pred)
+
+# Print the confusion matrix values
+print("TP: ", TP)
+print("FP: ", FP)
+print("FN: ", FN)
+print("TN: ", TN)
+
+# Calculate and print performance metrics: Accuracy, Precision, and Recall
+print("The Accuracy is ", (TP + TN) / (TP + TN + FP + FN))
+print("The Precision is ", TP / (TP + FP))
+print("The recall is ", TP / (TP + FN))
+
+
+###Explanation:-
+Line-by-Line Explanation:
+Imports:
+
+pandas: Library for data manipulation.
+
+matplotlib.pyplot: Library for plotting graphs.
+
+Read Data:
+
+data = pd.read_csv("iris-data.csv"): Loads the Iris dataset into a pandas DataFrame.
+
+Display First 5 Rows:
+
+data.head(): Displays the first five rows of the dataset.
+
+Check Shape of Data:
+
+data.shape: Outputs the number of rows and columns in the dataset.
+
+Display Last 5 Rows:
+
+data.tail(): Displays the last five rows of the dataset.
+
+Data Info:
+
+data.info(): Provides details on each column's data type and number of non-null values.
+
+Summary Statistics:
+
+data.describe(): Displays statistical information such as mean, std deviation, etc.
+
+Check Missing Data:
+
+data.isnull().sum(): Checks for any missing values in the dataset.
+
+Feature and Target Variables:
+
+X = data.drop(['class'], axis=1): Removes the 'class' column (target variable) from the dataset and assigns the remaining data to X (features).
+
+Y = data.drop([...], axis=1): Removes the feature columns and assigns the 'class' column to Y (target variable).
+
+Print Data:
+
+print(X), print(Y): Prints the feature and target variables.
+
+print(X.shape), print(Y.shape): Prints the shapes (dimensions) of X and Y.
+
+Train-Test Split:
+
+train_test_split: Splits the data into training (80%) and testing (20%) sets.
+
+X_train, X_test, Y_train, Y_test: Stores the training and testing sets for both features and target variables.
+
+Model Initialization and Training:
+
+from sklearn.naive_bayes import GaussianNB: Imports the Gaussian Naive Bayes classifier.
+
+model = GaussianNB(): Initializes the Naive Bayes model.
+
+model.fit(X_train, Y_train): Trains the model on the training data.
+
+Prediction:
+
+Y_pred = model.predict(X_test): Uses the trained model to predict the target values for the test set.
+
+Model Accuracy:
+
+model.score(X_test, Y_test): Displays the accuracy of the model on the test data.
+
+Confusion Matrix:
+
+accuracy_score(Y_test, Y_pred): Computes and prints the accuracy score.
+
+confusion_matrix(Y_test, Y_pred): Generates the confusion matrix.
+
+ConfusionMatrixDisplay(confusion_matrix=cm): Prepares the confusion matrix for plotting.
+
+disp.plot(): Plots the confusion matrix.
+
+Extracting Confusion Matrix Values:
+
+get_confusion_matrix_values: Function that extracts the true positives (TP), false positives (FP), false negatives (FN), and true negatives (TN) from the confusion matrix.
+
+Print Confusion Matrix Values:
+
+Prints the values for TP, FP, FN, and TN.
+
+Calculate Performance Metrics:
+
+Accuracy, Precision, and Recall are calculated using the formulae:
+
+Accuracy = (TP + TN) / (TP + TN + FP + FN)
+
+Precision = TP / (TP + FP)
+
+Recall = TP / (TP + FN)

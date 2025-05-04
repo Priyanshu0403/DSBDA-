@@ -1,0 +1,401 @@
+## Name: Rohan Sunil Sabale
+## Roll No: 22CO101
+# Title of the Assignment: Data Wrangling, II
+# Academic Performance Dataset - Data Wrangling Operations
+
+### 1. Import all the required Python Libraries
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from scipy import stats
+
+### 2. Creation of Dataset using Microsoft Excel
+# (Done externally)
+
+### 3. Load the Dataset into pandas dataframe
+df = pd.read_csv("AcademicPerformance.csv")
+df
+
+### 4. Preprocessing
+df.head()
+df.tail()
+df.describe(include="all")
+df.info()
+df.shape
+df.dtypes
+df.columns
+df[0:5]
+df.loc[0:2]
+df.loc[0:2, 'Subject1_marks':'Subject5_marks']
+df.iloc[0:3]
+df.iloc[1:5, 1:5]
+
+# A. Identification and Handling of Null Values
+# Check for missing values
+df.isnull()
+df.isna()
+df.isnull().any()
+df.isnull().sum()
+df.Attendence.isnull().sum()
+
+# List columns having missing values
+cols_with_na = []
+for col in df.columns:
+    if df[col].isna().any():
+        cols_with_na.append(col)
+cols_with_na
+
+# Filling missing values
+# 1. Replace nulls with NaN (redundant if already np.nan)
+df = df.replace(np.nan, value=0)
+df.head()
+
+# 2. Fill with constant value
+df = df.fillna(1)
+df.head()
+
+# 3. Fill using mean
+df['Subject1_marks'] = df['Subject1_marks'].fillna(df['Subject1_marks'].mean())
+df.head(10)
+
+# 4. Dropping missing values
+df = df.dropna()
+df.head()
+df = df.dropna(how="all")
+df.head()
+df = df.dropna(axis=1)
+df.head()
+df.dropna(axis=0, how='any', inplace=True)
+df.head()
+
+# B. Identification and Handling of Outliers
+# Detecting Outliers
+sns.boxplot(df)
+df.boxplot()
+sns.boxplot(x=df.Total_Marks)
+sns.boxplot(x=df.Percentage)
+sns.boxplot(x=df.Subject1_marks)
+
+plt.rcParams["figure.figsize"] = (9, 6)
+df_list = ['Rollno', 'Subject1_marks', 'Total_Marks', 'Percentage']
+fig, axes = plt.subplots(2, 2)
+fig.set_dpi(120)
+count = 0
+for r in range(2):
+    for c in range(2):
+        _ = df[df_list[count]].plot(kind='box', ax=axes[r, c])
+        count += 1
+
+# 2. Detect outliers using z-Score
+numeric_df = df.select_dtypes(include=[np.number])
+z_scores = np.abs(stats.zscore(numeric_df))
+threshold = 3
+outliers = (z_scores > threshold)
+outlier_rows = np.where(outliers.any(axis=1))[0]
+df_outliers = df.iloc[outlier_rows]
+print(df_outliers)
+
+# 3. Detecting outliers using IQR
+Q1 = df['Percentage'].quantile(0.25)
+Q3 = df['Percentage'].quantile(0.75)
+IQR = Q3 - Q1
+Lower_limit = Q1 - 1.5 * IQR
+Upper_limit = Q3 + 1.5 * IQR
+print(f'Q1 = {Q1}, Q3 = {Q3}, IQR = {IQR}, Lower_limit = {Lower_limit}, Upper_limit = {Upper_limit}')
+df[(df['Percentage'] < Lower_limit) | (df['Percentage'] > Upper_limit)]
+
+# Handling Outliers
+# 1. Remove outliers
+outliers = []
+for i in df.Percentage:
+    if i < Lower_limit or i > Upper_limit:
+        outliers.append(i)
+print("outliers are", outliers)
+
+Upper_limit
+Lower_limit
+df[df.Percentage < Lower_limit].index
+df1 = df.drop(df[df.Percentage < Lower_limit].index)
+df1.shape
+
+df2 = df[df.Percentage < Lower_limit]
+df2
+
+# 2. Mean/Median imputation
+sns.kdeplot(df.Percentage)
+sns.kdeplot(df1.Percentage)
+
+# Log transformation for normalization
+log_percentage = np.log(df.Percentage)
+log_percentage
+sns.kdeplot(log_percentage)
+
+# C. Data Transformation
+# 1. Check distribution with skewness
+skewness = numeric_df.skew()
+print(skewness)
+
+# 2. Distribution using KDE plots
+sns.kdeplot(df.Attendence)
+sns.kdeplot(df.Subject1_marks)
+sns.kdeplot(df.Subject2_marks)
+sns.kdeplot(df.Subject3_marks)
+sns.kdeplot(df.Subject4_marks2)
+sns.kdeplot(df.Subject5_marks)
+sns.kdeplot(df.Total_Marks)
+sns.kdeplot(df.Percentage)
+
+# Conclusion:
+# Explored data wrangling techniques like handling missing values, outliers, and transformations on the Academic Performance dataset.
+
+###Explanation:-
+✅ 1. Importing Libraries
+python
+Copy
+Edit
+import pandas as pd
+import numpy as np
+Explanation:
+
+pandas is used for data manipulation and analysis.
+
+numpy provides support for numerical operations, including handling of NaN and statistical functions.
+
+✅ 2. Dataset Creation (Mentioned as done in Excel)
+You manually created a dataset in Excel and named it "AcademicPerformance.csv".
+
+✅ 3. Load Dataset
+python
+Copy
+Edit
+df = pd.read_csv("AcademicPerformance.csv")
+df
+Explanation:
+Reads the CSV file into a pandas DataFrame df. The second line displays the dataset.
+
+✅ 4. Preprocessing
+python
+Copy
+Edit
+df.head()
+df.tail()
+df.describe(include="all")
+df.info()
+df.shape
+df.dtypes
+df.columns
+df[0:5]
+df.loc[0:2]
+df.loc[0:2, 'Subject1_marks':'Subject5_marks']
+df.iloc[0:3]
+df.iloc[1:5, 1:5]
+Explanation:
+
+.head(), .tail() → Shows the first/last rows of the dataset.
+
+.describe(include="all") → Gives descriptive statistics for both numeric and object columns.
+
+.info() → Summarizes the structure (data types and non-null counts).
+
+.shape → Shows the number of rows and columns.
+
+.dtypes, .columns → Shows the data types and column names.
+
+.loc[], .iloc[] → Used for label-based and position-based indexing.
+
+✅ A. Missing Values Detection & Handling
+Checking Nulls
+python
+Copy
+Edit
+df.isnull()
+df.isna()
+df.isnull().any()
+df.isnull().sum()
+df.Attendence.isnull().sum()
+Explanation:
+Detects missing values (NaN) across the DataFrame and specifically in the Attendence column.
+
+Making List of Columns with Missing Values
+python
+Copy
+Edit
+cols_with_na = []
+for col in df.columns:
+    if df[col].isna().any():
+        cols_with_na.append(col)
+cols_with_na
+Explanation:
+Creates a list of columns containing missing values.
+
+Handling Missing Values
+python
+Copy
+Edit
+df = df.replace(np.nan, value=0)
+df.head()
+
+df = df.fillna(1)
+df.head()
+
+df['Subject1_marks'] = df['Subject1_marks'].fillna(df['Subject1_marks'].mean())
+df.head(10)
+Explanation:
+
+Replace all NaN values with 0.
+
+Then replace any remaining NaN with 1.
+
+Fill missing values in Subject1_marks with the column's mean.
+
+Dropping Missing Values
+python
+Copy
+Edit
+df = df.dropna()
+df = df.dropna(how="all")
+df = df.dropna(axis=1)
+df.dropna(axis=0, how='any', inplace=True)
+df.head()
+Explanation:
+
+Drops rows or columns with missing values in various ways.
+
+how='all' means drop only if all values are missing.
+
+axis=1 refers to columns; axis=0 refers to rows.
+
+✅ B. Outlier Detection
+Using Boxplot
+python
+Copy
+Edit
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.boxplot(df)
+df.boxplot()
+sns.boxplot(x=df.Total_Marks)
+sns.boxplot(x=df.Percentage)
+sns.boxplot(x=df.Subject1_marks)
+Explanation:
+Boxplots visualize outliers and the distribution of values for various columns.
+
+Boxplots in Subplots
+python
+Copy
+Edit
+plt.rcParams["figure.figsize"] = (9, 6)
+df_list = ['Rollno', 'Subject1_marks', 'Total_Marks', 'Percentage']
+fig, axes = plt.subplots(2, 2)
+fig.set_dpi(120)
+count = 0
+for r in range(2):
+    for c in range(2):
+        _ = df[df_list[count]].plot(kind='box', ax=axes[r,c])
+        count += 1
+Explanation:
+Generates multiple boxplots to visualize outliers in key columns.
+
+Using Z-Score
+python
+Copy
+Edit
+from scipy import stats
+
+numeric_df = df.select_dtypes(include=[np.number])
+z_scores = np.abs(stats.zscore(numeric_df))
+threshold = 3
+outliers = (z_scores > threshold)
+outlier_rows = np.where(outliers.any(axis=1))[0]
+df_outliers = df.iloc[outlier_rows]
+print(df_outliers)
+Explanation:
+
+Calculates z-scores for numeric columns.
+
+Flags values above threshold (3) as outliers.
+
+Retrieves and prints rows with outliers.
+
+Using IQR
+python
+Copy
+Edit
+Q1 = df['Percentage'].quantile(0.25)
+Q3 = df['Percentage'].quantile(0.75)
+IQR = Q3 - Q1
+Lower_limit = Q1 - 1.5 * IQR
+Upper_limit = Q3 + 1.5 * IQR
+df[(df['Percentage'] < Lower_limit) | (df['Percentage'] > Upper_limit)]
+Explanation:
+
+Calculates Interquartile Range (IQR).
+
+Identifies outliers using Tukey’s method (outside 1.5×IQR).
+
+✅ Handling Outliers
+Removing Outliers
+python
+Copy
+Edit
+outliers = []
+for i in df.Percentage:
+    if i < Lower_limit or i > Upper_limit:
+        outliers.append(i)
+print("outliers are", outliers)
+
+df1 = df.drop(df[df.Percentage < Lower_limit].index)
+df1.shape
+
+df2 = df[df.Percentage < Lower_limit]
+df2
+Explanation:
+
+Finds values outside the IQR limits and removes them from the dataset.
+
+Mean/Median Imputation & Log Transformation
+python
+Copy
+Edit
+sns.kdeplot(df.Percentage)
+sns.kdeplot(df1.Percentage)
+
+log_percentage = np.log(df.Percentage)
+sns.kdeplot(log_percentage)
+Explanation:
+
+KDE plots show distribution before and after removing outliers.
+
+Log transformation reduces skewness in Percentage.
+
+✅ C. Data Transformation
+Skewness Check
+python
+Copy
+Edit
+numeric_df = df.select_dtypes(include=['number'])
+skewness = numeric_df.skew()
+print(skewness)
+Explanation:
+
+Measures skewness of each numeric column.
+
+Skewness > 1 or < -1 implies high asymmetry.
+
+KDE Plots for Distribution
+python
+Copy
+Edit
+sns.kdeplot(df.Attendence);
+sns.kdeplot(df.Subject1_marks);
+sns.kdeplot(df.Subject2_marks);
+sns.kdeplot(df.Subject3_marks);
+sns.kdeplot(df.Subject4_marks2);
+sns.kdeplot(df.Subject5_marks);
+sns.kdeplot(df.Total_Marks);
+sns.kdeplot(df.Percentage);
+Explanation:
+
+KDE plots help visualize the distribution of each variable to spot skewness or multimodal patterns.\

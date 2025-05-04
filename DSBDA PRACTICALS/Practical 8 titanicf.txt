@@ -1,0 +1,176 @@
+
+
+# Import required libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load built-in datasets from seaborn
+titanic = sns.load_dataset("titanic")
+tips = sns.load_dataset("tips")  # also used for scatterplots
+
+# Display the first few records
+print(titanic.head())
+print(tips.head())
+
+# 1) Count Plot - Survival Count
+sns.countplot(x='survived', data=titanic)
+plt.title("Titanic Survival Count")
+plt.show()
+
+# 2) Pie Chart - Gender Distribution
+titanic['sex'].value_counts().plot(kind="pie", autopct="%.2f")
+plt.title("Passenger Gender Distribution")
+plt.ylabel("")
+plt.show()
+
+# 3) Histogram - Age Distribution
+plt.hist(titanic['age'].dropna(), bins=5)
+plt.title("Age Histogram")
+plt.xlabel("Age")
+plt.ylabel("Frequency")
+plt.show()
+
+# 4) Distribution Plot - Age with KDE
+sns.histplot(titanic['age'], kde=True)
+plt.title("Age Distribution with KDE")
+plt.show()
+
+# 5) Scatter Plot - Total Bill vs Tip
+sns.scatterplot(x=tips["total_bill"], y=tips["tip"])
+plt.title("Total Bill vs Tip")
+plt.show()
+
+# 6) Scatter Plot with Hue
+sns.scatterplot(x=tips["total_bill"], y=tips["tip"], hue=tips["sex"])
+plt.title("Total Bill vs Tip by Gender")
+plt.show()
+
+# 7) Bar Plot - Passenger Class vs Age
+sns.barplot(x='pclass', y='age', data=titanic)
+plt.title("Average Age per Passenger Class")
+plt.show()
+
+# 8) Bar Plot with Hue - Class vs Fare
+sns.barplot(x='pclass', y='fare', hue='sex', data=titanic)
+plt.title("Fare per Class by Gender")
+plt.show()
+
+# 9) Boxplot - Age vs Sex
+sns.boxplot(x='sex', y='age', data=titanic)
+plt.title("Age Distribution by Gender")
+plt.show()
+
+# 10) Multivariate Boxplot - Age by Gender and Survival
+sns.boxplot(x='sex', y='age', hue='survived', data=titanic)
+plt.title("Age Distribution by Gender and Survival")
+plt.show()
+
+# 11) KDE Plot - Age Distribution for Survived vs Not Survived
+sns.kdeplot(data=titanic[titanic['survived'] == 0]['age'].dropna(), label='Did Not Survive', color='blue')
+sns.kdeplot(data=titanic[titanic['survived'] == 1]['age'].dropna(), label='Survived', color='orange')
+plt.title("Age Density by Survival Status")
+plt.xlabel("Age")
+plt.ylabel("Density")
+plt.legend()
+plt.show()
+
+# 12) Heatmap - Survival Count by Passenger Class
+survival_crosstab = pd.crosstab(titanic['pclass'], titanic['survived'], margins=True)
+sns.heatmap(survival_crosstab, annot=True, cmap="YlGnBu", linewidths=0.5)
+plt.title("Survival Count by Passenger Class")
+plt.xlabel("Survived")
+plt.ylabel("Passenger Class")
+plt.show()
+
+# 13) Clustermap - Parch vs Survival
+g = sns.clustermap(pd.crosstab(titanic['parch'], titanic['survived']), annot=True, cmap="coolwarm")
+g.fig.suptitle("Clustermap of Parch vs Survived", y=1.05)
+plt.show()
+
+###Explanation:
+Importing libraries:
+python
+Copy
+Edit
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+seaborn: A library for statistical data visualization built on top of Matplotlib.
+
+pandas: A library for data manipulation and analysis.
+
+matplotlib.pyplot: A plotting library to create static, interactive, and animated visualizations.
+
+Loading the Titanic dataset:
+python
+Copy
+Edit
+titanic = sns.load_dataset("titanic")
+sns.load_dataset() loads the Titanic dataset from Seaborn’s in-built datasets.
+
+Exploring the dataset:
+python
+Copy
+Edit
+titanic.head()  # Shows the first 5 rows
+titanic.tail()  # Shows the last 5 rows
+titanic.describe()  # Provides summary statistics for numerical columns
+titanic.info()  # Shows the data types and non-null counts
+Checking the 'fare' column distribution:
+python
+Copy
+Edit
+x = titanic["fare"]
+titanic.describe()  # Summary statistics of the 'fare' column
+x = titanic["fare"] stores the 'fare' column for analysis.
+
+Cleaning the data:
+python
+Copy
+Edit
+titanic_cleaned = titanic.drop(['pclass', 'embarked', 'deck', 'embark_town'], axis=1)
+Drops irrelevant or missing columns.
+
+Handling missing data and encoding categorical features:
+python
+Copy
+Edit
+titanic_cleaned.isnull().sum()  # Check for missing values
+titanic_encoded = pd.get_dummies(titanic_cleaned, drop_first=True)  # One-hot encoding
+pd.get_dummies() converts categorical variables into numerical format using one-hot encoding.
+
+Visualizing the distribution of 'fare' with histograms:
+python
+Copy
+Edit
+sns.histplot(data=titanic, x="fare", bins=8)
+sns.histplot(data=titanic, x="fare", binwidth=10)
+sns.histplot() creates histograms with different bin sizes to visualize the distribution of ticket prices ('fare').
+
+Boxplot for 'age' by 'sex':
+python
+Copy
+Edit
+sns.boxplot(x='sex', y='age', data=titanic)
+sns.boxplot(x='sex', y='age', data=titanic, hue='survived')
+Boxplot displays the distribution of ages across sexes and survival status.
+
+Violin plot:
+python
+Copy
+Edit
+sns.violinplot(x='sex', y='age', data=titanic)
+sns.violinplot(x='sex', y='age', data=titanic, hue='survived', split=True)
+The violin plot shows the distribution of data across categories and is especially useful for comparing distributions.
+
+Strip plot and Swarm plot:
+python
+Copy
+Edit
+sns.stripplot(x='sex', y='age', data=titanic, jitter=True)
+sns.swarmplot(x='sex', y='age', data=titanic)
+Strip plot: Shows individual data points along a categorical axis.
+
+Swarm plot: Similar to strip plots but ensures data points do not overlap.
